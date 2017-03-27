@@ -8,7 +8,7 @@
 int main(const int argc, const char* argv[]) {
 
     if (argc < 3) {
-        printf("Usage: verify plain_file signature_file");
+        printf("Usage: verify plain_file signature_file\n");
         exit(1);
     }
 
@@ -16,37 +16,43 @@ int main(const int argc, const char* argv[]) {
 
     gpgme_ctx_t context = init_context();
     if (!context) {
-        fprintf(stderr, "gpgme context init failed.");
+        fprintf(stderr, "gpgme context init failed.\n");
         exit(-1);
     }
 
     //read cipher text
+    FILE* plain_file;
     gpgme_data_t plain_data = get_gpgme_data_from_file(
-            argv[1],
+            &plain_file,
+            argv[2],
             "r"
     );
 
     //write plain text
+    FILE* sig_file;
     gpgme_data_t sig_data = get_gpgme_data_from_file(
-            argv[2],
+            &sig_file,
+            argv[3],
             "r"
     );
 
     //verify
     err = gpgme_op_verify(context, sig_data, plain_data, 0);
     if (gpg_err_code (err) != GPG_ERR_NO_ERROR) {
-        fprintf(stderr, "GPGme decrypt failed. %s", gpgme_strerror(err));
-    }
-
-    gpgme_verify_result_t  verify_result = gpgme_op_verify_result(context);
-    if (verify_result) {
-        printf("Status: %s\n", gpgme_strerror(
-                verify_result->signatures->status
-        ));
+        fprintf(stderr, "GPGme verify failed. %s\n", gpgme_strerror(err));
+    } else {
+        gpgme_verify_result_t verify_result = gpgme_op_verify_result(context);
+        if (verify_result) {
+            printf("Verify succeed.\n");
+        } else {
+            printf("Verify failed.\n");
+        }
     }
 
     gpgme_data_release(plain_data);
+    fclose(plain_file);
     gpgme_data_release(sig_data);
+    fclose(sig_file);
 
     gpgme_release(context);
 

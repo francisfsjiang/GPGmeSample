@@ -36,19 +36,19 @@ gpgme_ctx_t init_context() {
 
     err = gpgme_engine_check_version(GPGME_PROTOCOL_OpenPGP);
     if (gpg_err_code(err) != GPG_ERR_NO_ERROR) {
-        fprintf(stderr, "Check version failed.");
+        fprintf(stderr, "Check version failed.\n");
         return NULL;
     }
 
     err = gpgme_new(&context);
     if (gpg_err_code(err) != GPG_ERR_NO_ERROR) {
-        fprintf(stderr, "Create context failed.");
+        fprintf(stderr, "Create context failed.\n");
         return NULL;
     }
 
     err = gpgme_set_protocol(context, GPGME_PROTOCOL_OpenPGP);
     if (gpg_err_code(err) != GPG_ERR_NO_ERROR) {
-        fprintf(stderr, "Get protocol failed.");
+        fprintf(stderr, "Get protocol failed.\n");
         gpgme_release(context);
         return NULL;
     }
@@ -56,17 +56,17 @@ gpgme_ctx_t init_context() {
     return context;
 }
 
-gpgme_data_t get_gpgme_data_from_file(const char* path, const char* mode) {
+gpgme_data_t get_gpgme_data_from_file(FILE** file, const char* path, const char* mode) {
 
-    FILE* file = fopen(path, mode);
-    if (!file) {
-        fprintf (stderr, "Open file failed.");
+    (*file) = fopen(path, mode);
+    if (!(*file)) {
+        fprintf (stderr, "Open file failed.\n");
         return NULL;
     }
     gpgme_data_t data = NULL;
-    gpgme_error_t err = gpgme_data_new_from_stream(&data, file);
+    gpgme_error_t err = gpgme_data_new_from_stream(&data, *file);
     if (gpg_err_code (err) != GPG_ERR_NO_ERROR) {
-        fprintf(stderr, "GPGme data new failed. %s", strerror(errno));
+        fprintf(stderr, "GPGme data new failed. %s\n", strerror(errno));
         data = NULL;
     }
     return data;
