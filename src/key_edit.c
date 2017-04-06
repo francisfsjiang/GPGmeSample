@@ -60,27 +60,22 @@ interact_fnc (void *opaque, const char *status, const char *args, int fd) {
                 case 2:
                     result = "Y";
                     break;
-                case 3:
-                    result = "primary";
-                    break;
 
                 default:
                     result = "quit";
                     break;
             }
             step++;
-        }else if (!strcmp (args, "keyedit.save.okay")){
+        }
+        else if (!strcmp (args, "keyedit.save.okay")){
             result = "Y";
         }
         else if (!strcmp(args, "photoid.jpeg.add")) {
-            result = "/Users/never/Pictures/IMG_0435.JPG";
             result = (char*) opaque;
         }
         else if (!strcmp(args, "photoid.jpeg.size")) {
             result = "Y";
         }
-        else if (!strcmp(args, "keygen.valid"))
-            result = "0";
     }
     printf("result: %s\n", result);
     if (result) {
