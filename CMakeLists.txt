@@ -29,3 +29,6 @@ target_link_libraries(encrypt_sign ${LIBS})
 
 add_executable(decrypt_verify src/decrypt_verify.c)
 target_link_libraries(decrypt_verify ${LIBS})
+
+add_executable(key_edit src/key_edit.c)
+target_link_libraries(key_edit ${LIBS})
